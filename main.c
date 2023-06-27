@@ -2,8 +2,8 @@
 #include<time.h>
 #include<stdlib.h>
 //配列表示関数
-void print(const char* thema, int* a, int n) {
-	printf("%s", thema);
+void print(const char* title, int* a, int n) {
+	printf("%s", title);
 	for (int i = 0; i < n; i++) {
 		printf("%d,", a[i]);
 	}
@@ -17,25 +17,39 @@ int main() {
 	int a[N] = { 0 };
 
 	/*---------------------------------------------------------------------*/
-	//0～9の乱数を配列にセットさせ、表示させる
-	srand((unsigned)time(0));
-	a[0] = rand() % 10;
-	for (int i = 1; i < N; i++) {
+	//0～9の乱数を重複しないように配列にセットさせ、表示させる
+	srand((unsigned)time(NULL));
+	for (int i = 0; i < N; i++) {
 		a[i] = rand() % 10;
 		//重複チェックさせる(前提：Nが10以下であること！)
-		int j = 0;
-		while (j < i) {
-			for (j = 0; j < i; j++) {
-				//重複していたら、再度乱数をセットさせ、forループ途中で抜けさせる
-				if (a[j] == a[i]) {
-					a[i] = rand() % 10;
-					break;
-				}
+		for (int j = 0; j < i; j++) {
+			//重複していた
+			if (a[j] == a[i]) {
+				//次に進まないようにiを減らしておく
+				i--;
+				break;
 			}
-			//重複していない時はj==iとなる。重複しているときはj<iとなり再チェック！
 		}
 	}
 	print("元配列：", a, N);
+
+	/*---------------------------------------------------------------------*/
+	//とある数が配列に存在するか探索する
+	printf("探　索：");
+	int number = rand() % 10;
+	int index = -1;
+	for (int i = 0; i < N; i++) {
+		if (number == a[i]) {
+			index = i;
+			break;
+		}
+	}
+	if (index == -1) {
+		printf("%dは配列にない\n", number);
+	}
+	else {
+		printf("%dは配列の%d番にある\n", number, index);
+	}
 
 	/*---------------------------------------------------------------------*/
 	//小さい順に並びかえさせ、表示させる
@@ -61,7 +75,7 @@ int main() {
 		i++;
 		j--;
 	}
-	print("逆　順：", a, N);
+	print("ﾘﾊﾞｰｽ ：", a, N);
 
 	/*---------------------------------------------------------------------*/
 	//最大値・最小値を求めさせ、表示させる
@@ -85,7 +99,7 @@ int main() {
 	for (int i = 0; i < N; i++) {
 		total += a[i];
 	}
-	average = (float)total / N;
+	average = total / (float)N;
 	printf("合  計：%d\n", total);
 	printf("平　均：%.2f\n", average);
 
